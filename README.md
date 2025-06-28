@@ -1,14 +1,26 @@
-# Research Paper Explorer
+📚 Research Paper Fetcher with Tree-Based Analysis
+This Python application allows users to fetch the latest research papers from Semantic Scholar, CrossRef, and arXiv using a keyword or title. It then organizes and analyzes the data using two classic data structures:
 
-A Python-based tool that fetches research papers from Semantic Scholar, CrossRef, and arXiv using APIs.  
-It builds:
-- An AVL Tree for paper title autocomplete.
-- A Red-Black Tree to list unique authors.
+✅ AVL Tree for storing and autocompleting paper titles.
 
-## Features
-- Fetch top 5 research papers from each source
-- Autocomplete paper titles (AVL Tree)
-- List unique authors (Red-Black Tree)
+🔴 Red-Black Tree for tracking and listing unique authors efficiently.
+
+🚀 Features
+🔍 Fetch Research Papers: Query and retrieve metadata for top 5 papers from each source.
+
+🌳 AVL Tree:
+
+Stores paper titles.
+
+Provides autocomplete suggestions based on a prefix.
+
+🎨 Red-Black Tree:
+
+Stores paper-author relationships.
+
+Extracts a unique list of authors efficiently.
+
+📊 Source Attribution: Every paper entry includes its source (Semantic Scholar, CrossRef, or arXiv), title, authors, citation count, DOI, and URL.
 
 ## Setup
 ```bash
