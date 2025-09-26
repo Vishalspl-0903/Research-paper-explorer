@@ -1,1 +1,7 @@
 requests
+flask
+flask-socketio
+eventlet
+networkx
+numpy
+scikit-learn

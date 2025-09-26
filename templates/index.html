@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research Paper Explorer - Advanced Academic Search</title>
+    
+    <!-- External Libraries -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top shadow">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">
+                <i class="fas fa-search me-2"></i>
+                Research Paper Explorer
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#bookmarksModal">
+                            <i class="fas fa-bookmark me-1"></i>
+                            Bookmarks <span class="badge bg-light text-dark ms-1" id="bookmarkCount">0</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#readingListModal">
+                            <i class="fas fa-list me-1"></i>
+                            Reading List <span class="badge bg-light text-dark ms-1" id="readingListCount">0</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#analytics">
+                            <i class="fas fa-chart-bar me-1"></i>
+                            Analytics
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section bg-gradient-primary text-white py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8 mx-auto text-center">
+                    <h1 class="display-4 fw-bold mb-4 animate__animated animate__fadeInUp">
+                        Discover Research Papers Like Never Before
+                    </h1>
+                    <p class="lead mb-4 animate__animated animate__fadeInUp animate__delay-1s">
+                        Search across Semantic Scholar, CrossRef, and arXiv with advanced filtering, 
+                        real-time analytics, and intelligent recommendations.
+                    </p>
+                    
+                    <!-- Advanced Search Form -->
+                    <div class="search-container bg-white rounded-4 shadow-lg p-4 animate__animated animate__fadeInUp animate__delay-2s">
+                        <form id="searchForm" class="text-dark">
+                            <div class="row g-3">
+                                <div class="col-md-8">
+                                    <div class="position-relative">
+                                        <input type="text" 
+                                               class="form-control form-control-lg border-0 shadow-sm" 
+                                               id="searchQuery" 
+                                               placeholder="Enter research topic, title, or keywords..."
+                                               autocomplete="off">
+                                        <div id="autocompleteDropdown" class="autocomplete-dropdown"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="submit" class="btn btn-primary btn-lg w-100 shadow-sm">
+                                        <i class="fas fa-search me-2"></i>Search Papers
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Advanced Filters -->
+                            <div class="row g-3 mt-3">
+                                <div class="col-md-6">
+                                    <label class="form-label small text-muted fw-bold">Data Sources</label>
+                                    <div class="d-flex gap-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="semanticScholar" checked>
+                                            <label class="form-check-label small" for="semanticScholar">Semantic Scholar</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="crossref" checked>
+                                            <label class="form-check-label small" for="crossref">CrossRef</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="arxiv" checked>
+                                            <label class="form-check-label small" for="arxiv">arXiv</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small text-muted fw-bold">Year Range</label>
+                                    <div class="d-flex gap-2">
+                                        <input type="number" class="form-control form-control-sm" 
+                                               id="yearMin" placeholder="From" value="2000" min="1900" max="2024">
+                                        <input type="number" class="form-control form-control-sm" 
+                                               id="yearMax" placeholder="To" value="2024" min="1900" max="2024">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small text-muted fw-bold">Min Citations</label>
+                                    <input type="number" class="form-control form-control-sm" 
+                                           id="minCitations" placeholder="0" value="0" min="0">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Loading Indicator -->
+    <div id="loadingIndicator" class="text-center py-5 d-none">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-3 text-muted">Searching across academic databases...</p>
+    </div>
+
+    <!-- Results Section -->
+    <section id="resultsSection" class="py-5 d-none">
+        <div class="container">
+            <!-- Results Header -->
+            <div class="row mb-4">
+                <div class="col-lg-8">
+                    <h2 class="h3 fw-bold text-dark">Search Results</h2>
+                    <p class="text-muted" id="resultsInfo">Found papers matching your criteria</p>
+                </div>
+                <div class="col-lg-4">
+                    <div class="d-flex gap-2">
+                        <select class="form-select form-select-sm" id="sortBy">
+                            <option value="relevance">Sort by Relevance</option>
+                            <option value="year">Sort by Year</option>
+                            <option value="citations">Sort by Citations</option>
+                            <option value="title">Sort by Title</option>
+                        </select>
+                        <button class="btn btn-outline-primary btn-sm" id="viewToggle">
+                            <i class="fas fa-th-large"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Tags -->
+            <div id="filterTags" class="mb-4"></div>
+
+            <!-- Papers Grid -->
+            <div id="papersContainer" class="row">
+                <!-- Papers will be dynamically loaded here -->
+            </div>
+
+            <!-- Load More -->
+            <div class="text-center mt-4">
+                <button id="loadMoreBtn" class="btn btn-outline-primary d-none">
+                    <i class="fas fa-plus me-2"></i>Load More Papers
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Analytics Section -->
+    <section id="analytics" class="py-5 bg-light d-none">
+        <div class="container">
+            <h2 class="h3 fw-bold text-dark mb-4">
+                <i class="fas fa-chart-bar me-2"></i>Search Analytics
+            </h2>
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-white">
+                            <h5 class="card-title mb-0">Publication Timeline</h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="yearChart" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-white">
+                            <h5 class="card-title mb-0">Source Distribution</h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="sourceChart" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-white">
+                            <h5 class="card-title mb-0">Top Authors</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="authorsChart"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-white">
+                            <h5 class="card-title mb-0">Citation Statistics</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="citationStats"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bookmarks Modal -->
+    <div class="modal fade" id="bookmarksModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-bookmark me-2"></i>My Bookmarks
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="bookmarksList">
+                        <!-- Bookmarked papers will be loaded here -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="exportBookmarks">
+                        <i class="fas fa-download me-2"></i>Export
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reading List Modal -->
+    <div class="modal fade" id="readingListModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-list me-2"></i>My Reading List
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="readingList">
+                        <!-- Reading list papers will be loaded here -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="exportReadingList">
+                        <i class="fas fa-download me-2"></i>Export
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Paper Detail Modal -->
+    <div class="modal fade" id="paperDetailModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Paper Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="paperDetailContent">
+                        <!-- Paper details will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="mb-0">&copy; 2024 Research Paper Explorer. Built with advanced data structures and modern web technologies.</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p class="mb-0">
+                        <i class="fas fa-code me-2"></i>Open Source Project
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

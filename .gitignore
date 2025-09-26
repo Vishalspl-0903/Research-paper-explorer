@@ -1,0 +1,78 @@
+# Research Paper Explorer - .gitignore
+# Keep only essential core files, exclude runtime data and user-generated content
+
+# ===== Python Runtime =====
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# ===== Virtual Environments =====
+venv/
+env/
+ENV/
+.env
+.venv
+
+# ===== Database Files (Runtime Data) =====
+*.db
+*.sqlite
+*.sqlite3
+research_papers.db
+user_data.db
+papers.db
+
+# ===== Log Files =====
+*.log
+logs/
+
+# ===== IDE & Editors =====
+.vscode/settings.json
+.vscode/launch.json
+.idea/
+*.swp
+*.swo
+*~
+
+# ===== OS Generated =====
+.DS_Store
+Thumbs.db
+
+# ===== User Generated Content =====
+uploads/
+user_files/
+exports/
+reports/
+papers_cache/
+downloaded_papers/
+user_collections/
+bookmarks.json
+reading_lists/
+
+# ===== Sensitive Data =====
+.secrets
+secrets.json
+api_keys.py
+.api_keys
+*.key
+auth.json
+credentials.json
+
+# ===== Redis Runtime Data =====
+dump.rdb
+
+# ===== Docker Runtime (Keep config files) =====
+volumes/
+docker-volumes/
+
+# ===== Testing =====
+.coverage
+.pytest_cache/
+htmlcov/
+coverage.xml
+
+# ===== Temporary Files =====
+*.tmp
+*.temp
+temp/
+tmp/
